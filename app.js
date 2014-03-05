@@ -14,11 +14,16 @@ try {
 }
 
 function init(){
+
+  // Set up HTTP server
   http
     .createServer(main)
     .listen(port, function(){
       console.log('Server running on port ' + port);
     });
+
+  // Set up nodemailer
+  var transport = nodemailer.createTransport("SMTP", config);
 }
 
 function main(request, response){

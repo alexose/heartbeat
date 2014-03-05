@@ -5,10 +5,9 @@ module.exports = function setup(cb){
   print("It looks like you haven't set up your SMTP server.  Let's do that now.");
 
   var steps = [
-    ["SMTP Server: ", "smtp"],
-    ["Port: ",        "port"],
-    ["Username: ",    "username"],
-    ["Password: ",    "password"]
+    ["Service [e.g., Gmail, Hotmail, etc.]: ", "service"],
+    ["Username: ",    "auth:username"],
+    ["Password: ",    "auth:password"]
   ];
 
   var config = {};
@@ -29,9 +28,9 @@ module.exports = function setup(cb){
         cb
       );
     }
-  };
+  }
 
-  function ask(str, key, pos){
+  function ask(str, keypath, pos){
 
     var stdin  = process.stdin
       , stdout = process.stdout;
@@ -43,9 +42,21 @@ module.exports = function setup(cb){
     stdin.once('data', function(data){
       data = data.toString().trim();
 
-      config[key] = data;
+      record(config, keypath, data);
       go(pos);
     });
+  }
+
+  // Handle simple keypaths
+  function record(obj, keypath, string){
+
+    var arr = keypath.split(':');
+
+    for (var i in arr){
+        var key = arr[i];
+        obj[key] = (i == arr.length-1) ? string : (obj[key] || {});
+        obj = obj[key];
+    }
   }
 
   function print(str, n){
