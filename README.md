@@ -39,10 +39,18 @@ Note that each request is tracked by a combination of your IP and User-Agent, so
 
 Heartbeat can also alert you if a particular value is out of range:
 
-    curl http://heartbeat.server/alex@alexose.com/30/55/60/80
+    curl http://heartbeat.server/alex@alexose.com/30/70/60/80  # in range
+    curl http://heartbeat.server/alex@alexose.com/30/72        # in range
+    curl http://heartbeat.server/alex@alexose.com/30/59        # out of range
 
 # Security
 
 There is none.
 
 # Redundancy
+
+Nope!
+
+# Rate Limiting
+
+By default, each IP is only allowed to send 20 alerts per day.
