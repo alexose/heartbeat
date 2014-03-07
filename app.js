@@ -59,7 +59,7 @@ function main(request, response){
 
     // Map array to an object
     var obj = {}
-      , fields = ['email', 'time', 'value', 'minimum', 'maximum'];
+      , fields = ['email', 'time', 'value', 'min', 'max'];
 
     fields.forEach(function(d, i){
       obj[d] = arr[i];
