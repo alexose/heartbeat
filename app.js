@@ -63,17 +63,22 @@ function main(request, response){
       obj[d] = arr[i];
     });
 
+    // Add useragent
+    obj.useragent = request.headers['user-agent'];
+
     // Create/update heartbeat
     heartbeat(obj, handle);
-
-    respond('Created heartbeat for ' + obj.email + ' (expires in ' + (obj.time || 0) + ' seconds)' );
   }
 
   function handle(error, response){
     if (error){
-      log.warn("Heartbeat fired, but couldn't send email. " + error.toString());
+      var string = "There was a problem with your request. " + error.toString();
+
+      log.warn(string);
+      respond(string, 400);
     } else {
-      log.info("Heartbeat fired.");
+
+      respond(response);
     }
   }
 
