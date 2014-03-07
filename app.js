@@ -65,8 +65,9 @@ function main(request, response){
       obj[d] = arr[i];
     });
 
-    // Add useragent
+    // Add useragent & address
     obj.useragent = request.headers['user-agent'];
+    obj.address   = request.connection.remoteAddress;
 
     // Create/update heartbeat
     heartbeat(obj, handle);
