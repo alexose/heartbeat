@@ -1,9 +1,14 @@
+/*jshint laxcomma: true */
+
 var http = require('http')
   , url = require('url')
-  , fs = require('fs')
-  , querystring = require('querystring')
-  , nodemailer = require('nodemailer')
-  , validator = require('validator');
+  , fs = require('fs');
+
+// External deps
+var log = require('npmlog')
+  , querystring = require('querystring');
+
+log.enableColor();
 
 var port = process.argv && process.argv.length > 2 ? process.argv[2] : 3000;
 
@@ -15,25 +20,21 @@ try {
   return;
 }
 
-try {
-  // Set up nodemailer
-  var transport = nodemailer.createTransport("SMTP", options);
-} catch(e){
-  console.log("Couldn't start nodemailer.  Did you run npm install?");
-}
+var heartbeat = require('./lib/heartbeat')(options);
 
 init();
+
+// Set up HTTP server
 function init(){
 
-  // Set up HTTP server
   http
     .createServer(main)
     .listen(port, function(){
-      console.log('Server running on port ' + port);
+      log.info('Server running on port ' + port);
     });
-
 }
 
+// Handle request, provide README if none given
 function main(request, response){
   var arr = request.url.split('/');
 
@@ -58,6 +59,7 @@ function main(request, response){
 
   function process(arr){
 
+    // Map array to an object
     var obj = {}
       , fields = ['email', 'time', 'value', 'minimum', 'maximum'];
 
@@ -65,29 +67,18 @@ function main(request, response){
       obj[d] = arr[i];
     });
 
-    if (validate(obj)){
-      heartbeat(obj, handle);
-    }
+    // Create/update heartbeat
+    heartbeat(obj, handle);
 
-    respond('Created heartbeat for ' + obj.email);
+    respond('Created heartbeat for ' + obj.email + ' (expires in ' + (obj.time || 0) + ' seconds)' );
   }
 
   function handle(error, response){
     if (error){
-      console.log("Heartbeat fired, but couldn't send email. " + error.toString());
+      log.warn("Heartbeat fired, but couldn't send email. " + error.toString());
     } else {
-      console.log("Heartbeat fired.");
+      log.info("Heartbeat fired.");
     }
-  }
-
-  function validate(obj){
-
-    if (!validator.isEmail(obj.email)){
-      respond('Invalid Email address.', 400);
-      return false;
-    }
-
-    return true;
   }
 
   function respond(string, code, type){
@@ -101,24 +92,5 @@ function main(request, response){
     response.write(string);
     response.end();
   }
-}
-
-function heartbeat(obj, cb){
-
-    var timeout = setTimeout(send, obj.time * 1000);
-
-    function send(){
-        transport.sendMail({
-            from : 'Heartbeat',
-            to : obj.email,
-            subject : 'Heartbeat Alert:',
-            text : 'Your alert.',
-            html : '<b>Your alert.</b>',
-        }, cb);
-    }
-
-    function clear(){
-
-    }
 }
 
