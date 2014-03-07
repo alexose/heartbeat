@@ -1,12 +1,8 @@
 /*jshint laxcomma: true */
-
 var http = require('http')
-  , url = require('url')
-  , fs = require('fs');
-
-// External deps
-var log = require('npmlog')
-  , querystring = require('querystring');
+  , url  = require('url')
+  , fs   = require('fs')
+  , log  = require('npmlog');
 
 log.enableColor();
 
