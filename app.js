@@ -6,6 +6,8 @@ var http = require('http')
 
 log.enableColor();
 
+log.level = "verbose";
+
 var port = process.argv && process.argv.length > 2 ? process.argv[2] : 3000;
 
 // Load config
@@ -74,7 +76,6 @@ function main(request, response){
     if (error){
       var string = "There was a problem with your request. " + error.toString();
 
-      log.warn(string);
       respond(string, 400);
     } else {
 
@@ -86,6 +87,8 @@ function main(request, response){
 
     code = code || 200;
     type = type || "text/plain";
+
+    log.verbose(code + ': ' + string);
 
     response.writeHead(code, {
       "Content-Type": type
