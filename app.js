@@ -1,18 +1,28 @@
 var http = require('http')
   , url = require('url')
   , fs = require('fs')
-  , querystring = require('querystring');
+  , querystring = require('querystring')
+  , nodemailer = require('nodemailer')
+  , validator = require('validator');
 
 var port = process.argv && process.argv.length > 2 ? process.argv[2] : 3000;
 
 // Load config
 try {
   var options = require('./config/config.js');
-  init();
 } catch(e){
   require('./setup.js')(init);
+  return;
 }
 
+try {
+  // Set up nodemailer
+  var transport = nodemailer.createTransport("SMTP", options);
+} catch(e){
+  console.log("Couldn't start nodemailer.  Did you run npm install?");
+}
+
+init();
 function init(){
 
   // Set up HTTP server
@@ -22,8 +32,6 @@ function init(){
       console.log('Server running on port ' + port);
     });
 
-  // Set up nodemailer
-  var transport = nodemailer.createTransport("SMTP", config);
 }
 
 function main(request, response){
@@ -33,28 +41,59 @@ function main(request, response){
     explain(request, response);
   } else {
     arr.shift();
-    heartbeat(arr, response);
+    process(arr, response);
   }
 
   function explain(){
 
     // Load HTML template
-    try{
+    try {
       fs.readFile('README.md', 'utf8', function(err, html){
         respond(html);
       });
     } catch(e){
+      respond("Couldn't find README.md.", 404);
     }
   }
 
-  function heartbeat(arr){
-    respond('You requested ' + arr.join(','));
+  function process(arr){
+
+    var obj = {}
+      , fields = ['email', 'time', 'value', 'minimum', 'maximum'];
+
+    fields.forEach(function(d, i){
+      obj[d] = arr[i];
+    });
+
+    if (validate(obj)){
+      heartbeat(obj, handle);
+    }
+
+    respond('Created heartbeat for ' + obj.email);
   }
 
-  function respond(string, type, code){
+  function handle(error, response){
+    if (error){
+      console.log("Heartbeat fired, but couldn't send email. " + error.toString());
+    } else {
+      console.log("Heartbeat fired.");
+    }
+  }
 
-    type = type || "text/plain";
+  function validate(obj){
+
+    if (!validator.isEmail(obj.email)){
+      respond('Invalid Email address.', 400);
+      return false;
+    }
+
+    return true;
+  }
+
+  function respond(string, code, type){
+
     code = code || 200;
+    type = type || "text/plain";
 
     response.writeHead(code, {
       "Content-Type": type
@@ -62,5 +101,24 @@ function main(request, response){
     response.write(string);
     response.end();
   }
-
 }
+
+function heartbeat(obj, cb){
+
+    var timeout = setTimeout(send, obj.time * 1000);
+
+    function send(){
+        transport.sendMail({
+            from : 'Heartbeat',
+            to : obj.email,
+            subject : 'Heartbeat Alert:',
+            text : 'Your alert.',
+            html : '<b>Your alert.</b>',
+        }, cb);
+    }
+
+    function clear(){
+
+    }
+}
+

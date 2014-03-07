@@ -6,8 +6,8 @@ module.exports = function setup(cb){
 
   var steps = [
     ["Service [e.g., Gmail, Hotmail, etc.]: ", "service"],
-    ["Username: ",    "auth:username"],
-    ["Password: ",    "auth:password"]
+    ["Username: ",                             "auth:user"],
+    ["Password: ",                             "auth:pass"]
   ];
 
   var config = {};
