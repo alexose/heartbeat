@@ -69,6 +69,12 @@ function main(request, response){
     obj.useragent = request.headers['user-agent'];
     obj.address   = request.connection.remoteAddress;
 
+    // Handle 'cancel' case
+    if (obj.time && obj.time === 'cancel'){
+      obj.cancel = true;
+      delete obj.time;
+    }
+
     // Create/update heartbeat
     heartbeat(obj, handle);
   }
