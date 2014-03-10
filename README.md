@@ -1,34 +1,29 @@
 Heartbeat
 =========
 
-Heartbeat is an EKG for your remote process.  It lets you know if it's dying.
+Heartbeat is a simple way to check a process's vital signs.  Use it instead of Monit, Pingdom, Uptime Robot, or any combination thereof.
 
 It's intended to be used in simple applications where full-scale process monitoring is overkill.
 
-# Installation
-
-    npm install heartbeat-server
-    node heartbeat-server app.js [port]
-
 # Usage
 
-Making a Heartbeat request is easy:
+Making a new Heartbeat is easy.  Just open up a terminal and type:
 
-    curl http://server/email/[time]/[value]/[minimum]/[maximum]
+    curl http://heartbeat.alexose.com/your-email@example.com/60
 
-For example,
+This will create a new heartbeat that will alert "your-email@example.com" in 60 seconds.  You can postpone this alert by running the same command again, or you can stop it altogether by sending a cancellation:
 
-    curl http://hearbeat.server/alex@alexose.com/30
+    curl http://heartbeat.alexose.com/your-email@example.com/cancel
 
-Once recieved, this will alert alex@alexose.com in 30 seconds, unless one of the two following requests are made:
+Heartbeat handles these nonstandard URLs and does not require them to be encoded in any special way.
 
-    curl http://heartbeat.server/alex@alexose.com/30
+# Examples
 
-or
+It's often useful to know whether a machine has lost power or internet connectivity.  An easy to monitor this might be to add a Heartbeat to your crontab.  From the terminal, type:
 
-    curl http://heartbeat.server/alex@alexose.com/30/cancel
+    (crontab -l ; echo "* * * * * curl http://heartbeat.alexose.com/your-email@example.com/120") |   crontab -
 
-Heartbeat handles these nonstandard URLs, and does not require them to be encoded.  You may URLencode these parameters if you wish (for compatibility reasons!), but it isn't necessary.
+This updates the Heartbeat every 60 seconds.  If it fails to update, you'll receive an alert after 120 seconds.
 
 # Advanced
 
@@ -42,6 +37,13 @@ Heartbeat can also alert you if a particular value is out of range:
     curl http://heartbeat.server/alex@alexose.com/30/70/60/80  # in range
     curl http://heartbeat.server/alex@alexose.com/30/72        # in range
     curl http://heartbeat.server/alex@alexose.com/30/59        # out of range
+
+# Installation
+
+If you'd like to run it on your own machine, just npm checkout heartbeat-server.
+
+    npm install heartbeat-server
+    node heartbeat-server app.js [port]
 
 # Security
 

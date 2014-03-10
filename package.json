@@ -1,5 +1,5 @@
 {
-  "name": "heartbeat",
+  "name": "heartbeat-server",
   "description": "An EKG for your application",
   "author": "Alexander Ose <alex@alexose.com>",
   "engine": "node >= 0.10.17",
@@ -10,7 +10,6 @@
     "url": "git@github.com:alexose/heartbeat.git"
   },
   "dependencies": {
-    "memory-cache": "0.0.5",
     "nodemailer": "~0.6.1",
     "validator": "~3.4.0",
     "npmlog": "0.0.6"
