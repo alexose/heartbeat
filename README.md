@@ -29,14 +29,14 @@ This updates the Heartbeat every 60 seconds.  If it fails to update, you'll rece
 
 Note that each request is tracked by a combination of your IP and User-Agent, so there's no need for unique IDs or tags.  If you need multiple heartbeats, simply use a different User-Agent:
 
-    curl -A "process one" http://hearbeat.server/alex@alexose.com/30
-    curl -A "process two" http://hearbeat.server/alex@alexose.com/30
+    curl -A "process one" http://heartbeat.alexose.com/your-email@example.com/60
+    curl -A "process two" http://heartbeat.alexose.com/your-email@example.com/60
 
 Heartbeat can also alert you if a particular value is out of range:
 
-    curl http://heartbeat.server/alex@alexose.com/30/70/60/80  # in range
-    curl http://heartbeat.server/alex@alexose.com/30/72        # in range
-    curl http://heartbeat.server/alex@alexose.com/30/59        # out of range
+    curl http://heartbeat.alexose.com/your-email@example.com/60/70/60/80  # in range
+    curl http://heartbeat.alexose.com/your-email@example.com/60/72        # in range
+    curl http://heartbeat.alexose.com/your-email@example.com/60/57        # out of range
 
 # Installation
 
