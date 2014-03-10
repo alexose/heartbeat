@@ -100,7 +100,7 @@ function main(request, response){
     response.writeHead(code, {
       "Content-Type": type
     });
-    response.write(string);
+    response.write(string + '\n');
     response.end();
   }
 }
