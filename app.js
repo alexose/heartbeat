@@ -45,11 +45,20 @@ function main(request, response){
 
   function explain(){
 
-    // Load HTML template
     try {
-      fs.readFile('README.md', 'utf8', function(err, html){
-        respond(html);
+      fs.readFile('README.md', 'utf8', function(err, md){
+
+        // Load README.tmpl and insert markdown
+        fs.readFile('README.tmpl', 'utf8', function(err, tmpl){
+
+          var html = tmpl
+            .replace('{{name}}', 'Heartbeat - An EKG for your application.')
+            .replace('{{readme}}', md);
+
+          respond(html, null, 'text/html');
+        });
       });
+
     } catch(e){
       respond("Couldn't find README.md.", 404);
     }
