@@ -76,7 +76,7 @@ function main(request, response){
 
     // Add useragent & address
     obj.useragent = request.headers['user-agent'];
-    obj.address   = request.connection.remoteAddress;
+    obj.address   = request.headers['x-forwarded-for'] || request.connection.remoteAddress;
 
     // Handle 'cancel' case
     if (obj.time && obj.time === 'cancel'){
