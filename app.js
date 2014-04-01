@@ -107,7 +107,8 @@ function main(request, response){
     log.verbose(code + ': ' + string);
 
     response.writeHead(code, {
-      "Content-Type": type
+      "Content-Type": type,
+      "Content-Length": string.length
     });
     response.write(string + '\n');
     response.end();
