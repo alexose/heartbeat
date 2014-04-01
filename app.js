@@ -2,7 +2,8 @@
 var http = require('http')
   , url  = require('url')
   , fs   = require('fs')
-  , log  = require('npmlog');
+  , log  = require('npmlog')
+  , validator  = require('validator');
 
 log.enableColor();
 
@@ -73,6 +74,14 @@ function main(request, response){
     fields.forEach(function(d, i){
       obj[d] = arr[i];
     });
+
+    // Hidden feature:  If "time" isn't numeric, we'll use the string a subject line and execute the alert immediately.
+    if (typeof(obj.time) !== 'undefined'){
+      if (!validator.isNumeric(obj.time)){
+        obj.subject = obj.time;
+        obj.time = 0;
+      }
+    }
 
     // Add useragent & address
     obj.useragent = request.headers['user-agent'];
