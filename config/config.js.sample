@@ -1,0 +1,12 @@
+module.exports = {
+  transport : {
+    service : "SendGrid",
+    auth : {
+        user : "user",
+        pass : "pass"
+    }
+  },
+  from: 'heartbeat@alexose.com',
+  subject_prefix: 'Alert: '
+  text: 'Your heartbeat has been removed, and is therefore no longer running.'
+}

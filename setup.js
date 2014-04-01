@@ -1,3 +1,4 @@
+/*jshint laxcomma: true */
 var fs = require('fs');
 
 module.exports = function setup(cb){
@@ -5,9 +6,12 @@ module.exports = function setup(cb){
   print("It looks like you haven't set up your SMTP server.  Let's do that now.");
 
   var steps = [
-    ["Service [e.g., Gmail, Hotmail, etc.]: ", "service"],
-    ["Username: ",                             "auth:user"],
-    ["Password: ",                             "auth:pass"]
+    ["Service [e.g., Gmail, SendGrid etc.]", "transport:service"],
+    ["Username",                             "transport:auth:user"],
+    ["Password",                             "transport:auth:pass"],
+    ["From",                                 "from", "heartbeat@heartbeat.com"],
+    ["Subject",                              "subject_prefix", "Alert: "],
+    ["Body",                                 "body", "Your heartbeat has been removed, and is therefore no longer running."]
   ];
 
   var config = {};
@@ -16,7 +20,7 @@ module.exports = function setup(cb){
 
   function go(pos){
     if (pos < steps.length){
-      var step = steps[pos].concat([pos + 1]);
+      var step = [pos + 1].concat(steps[pos]);
 
       ask.apply(this, step);
     } else {
@@ -30,17 +34,22 @@ module.exports = function setup(cb){
     }
   }
 
-  function ask(str, keypath, pos){
+  function ask(pos, str, keypath, defaults){
 
     var stdin  = process.stdin
       , stdout = process.stdout;
 
-    print(str, true);
+    if (defaults){
+      str += ' [' + defaults + ']';
+    }
+    print(str + ': ', true);
     stdin.resume();
     stdin.setEncoding('utf8');
 
     stdin.once('data', function(data){
       data = data.toString().trim();
+
+      data = data === '' ? defaults : data;
 
       record(config, keypath, data);
       go(pos);
