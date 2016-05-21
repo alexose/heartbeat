@@ -16,7 +16,7 @@ try {
   process.exit(1);
 }
 
-log.level = 'verbose';
+log.level = options.logging;
 
 var heartbeat = require('./lib/heartbeat')(options);
 
