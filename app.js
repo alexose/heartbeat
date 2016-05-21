@@ -6,7 +6,6 @@ var http = require('http')
   , validator  = require('validator');
 
 log.enableColor();
-
 log.level = "verbose";
 
 var port = process.argv && process.argv.length > 2 ? process.argv[2] : 3000;
@@ -75,7 +74,7 @@ function main(request, response){
       obj[d] = arr[i];
     });
 
-    // Hidden feature:  If "time" isn't numeric, we'll use the string a subject line and execute the alert immediately.
+    // Hidden feature:  If "time" isn't numeric, we'll use the string as the subject line and execute the alert immediately.
     if (typeof(obj.time) !== 'undefined'){
       if (!validator.isNumeric(obj.time)){
         obj.subject = obj.time;
