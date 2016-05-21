@@ -1,4 +1,5 @@
 module.exports = {
+  logging : 'error', // Log level set to 'error'
   transport : {
     service : "SendGrid",
     auth : {

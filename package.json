@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "nodemailer": "~0.6.1",
-    "validator": "~3.4.0",
-    "npmlog": "0.0.6"
+    "npmlog": "0.0.6",
+    "portfinder": "^1.0.3",
+    "validator": "~3.4.0"
   }
 }
