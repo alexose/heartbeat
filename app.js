@@ -3,20 +3,20 @@ var http = require('http')
   , url  = require('url')
   , fs   = require('fs')
   , log  = require('npmlog')
+  , portfinder = require('portfinder')
   , validator  = require('validator');
 
 log.enableColor();
-log.level = "verbose";
-
-var port = process.argv && process.argv.length > 2 ? process.argv[2] : 3000;
 
 // Load config
 try {
-  var options = require('./config/config.js');
+  var options = require('./config.js');
 } catch(e){
-  require('./setup.js')(init);
-  return;
+  log.error('Please create a config.js.');
+  process.exit(1);
 }
+
+log.level = 'verbose';
 
 var heartbeat = require('./lib/heartbeat')(options);
 
@@ -24,12 +24,13 @@ init();
 
 // Set up HTTP server
 function init(){
-
-  http
-    .createServer(main)
-    .listen(port, function(){
-      log.info('Server running on port ' + port);
-    });
+  portfinder.getPort(function (err, port){
+    http
+      .createServer(main)
+      .listen(port, function(){
+        log.info('Server running on port ' + port);
+      });
+  });
 }
 
 // Handle request, provide README if none given
@@ -99,10 +100,8 @@ function main(request, response){
   function handle(error, response){
     if (error){
       var string = "There was a problem with your request. " + error.toString();
-
       respond(string, 400);
     } else {
-
       respond(response);
     }
   }
@@ -122,4 +121,3 @@ function main(request, response){
     response.end();
   }
 }
-
