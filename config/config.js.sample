@@ -8,5 +8,11 @@ module.exports = {
   },
   from: 'heartbeat@alexose.com',
   subject_prefix: 'Alert: '
-  text: 'Your heartbeat has been removed, and is therefore no longer running.'
+  text: 'Your heartbeat has been removed, and is therefore no longer running.',
+  postgres: {
+    host : 'localhost:5432',
+    username : 'username',
+    password : 'password',
+    database : 'heartbeat' // The schema will generate automatically if it's not already there
+  }
 }
